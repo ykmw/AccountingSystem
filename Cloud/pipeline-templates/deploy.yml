@@ -1,0 +1,155 @@
+parameters:
+- name: ServiceConnection
+  # the service connection and the target resource group 
+  # have the same name
+  displayName: 'Service Connection'
+  type: string
+
+- name: buildConfiguration
+  displayName: 'Build Configuration'
+  type: string
+  default: Release
+  values:
+  - Release
+  - Debug
+
+- name: EnvironmentName
+  displayName: 'Environment'
+  type: string
+  default: Test
+  values:
+  - Test
+  - Sandbox
+
+jobs:
+  - deployment: Deploy
+
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    variables:
+      - group: ${{ parameters.EnvironmentName }}
+
+    environment: ${{ parameters.EnvironmentName }}
+
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          # Retrieve the published artifacts from the Build stage
+          - download: current
+            artifact: drop
+
+          # Provision needed Azure resources into the resource group specific 
+          # to the target Environment
+          # Record the appservice name in order to start and stop the website in later tasks
+          - task: AzureCLI@2
+            name: provision
+            displayName: Provision resources
+            inputs:
+              azureSubscription: ${{ parameters.ServiceConnection }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az deployment group create --resource-group "${{ parameters.ServiceConnection }}" --template-file "$(Pipeline.Workspace)/drop/${{ parameters.BuildConfiguration }}/resource-templates/accounting.bicep" --mode Complete --parameters "@$(Pipeline.Workspace)/drop/${{ parameters.BuildConfiguration }}/resource-templates/var-${{ parameters.EnvironmentName }}.json" --parameters environment="${{ parameters.EnvironmentName }}" sqlAdminLogin="$(SqlAdminLogin)" sqlAdminLoginPassword="$(SqlAdminLoginPassword)"
+                echo "##vso[task.setvariable variable=appServiceName;isOutput=true]$(az deployment group show --resource-group "${{ parameters.ServiceConnection }}" -n "accounting" --query "properties.outputs.appServiceName.value" | tr -d '"')"
+                echo "##vso[task.setvariable variable=appServiceUrl;isOutput=true]$(az deployment group show --resource-group "${{ parameters.ServiceConnection }}" -n "accounting" --query "properties.outputs.appServiceUrl.value" | tr -d '"')"
+
+          # Stop the website in order to apply migrations
+          # (stopping isn't needed just to deploy a new version)
+          - task: AzureAppServiceManage@0
+            displayName: 'Stop app'
+            inputs: 
+              azureSubscription: ${{ parameters.ServiceConnection }}
+              webAppName: $(provision.appServiceName)
+              action: 'Stop Azure App Service'
+
+          # Deploy the latest version of the application
+          - task: AzureWebApp@1
+            displayName: 'Deploy app'
+            inputs:
+              azureSubscription: ${{ parameters.ServiceConnection }}
+              appName: $(provision.appServiceName)
+              package: '$(Pipeline.Workspace)/drop/${{ parameters.BuildConfiguration }}/*.zip'
+              appSettings: -AUTHORITY $(provision.appServiceUrl)
+
+  # Migrations have to be done as a separate job as the special deployment job
+  # does not have access to the repository
+  - job: Migrate
+    dependsOn: Deploy
+    displayName: 'Migrate'
+
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    variables:
+      appServiceName: $[ dependencies.Deploy.outputs['Deploy.provision.appServiceName'] ]
+
+    steps:
+    # Install local tools in order to get access to dotnet ef command
+    - task: DotNetCoreCLI@2
+      displayName: 'Install local tools'
+      inputs:
+        command: custom
+        custom: tool
+        arguments: 'restore'
+
+    # Retrieve the connection string to use
+    - task: AzureCLI@2
+      displayName: Retrieve connection string
+      inputs:
+        azureSubscription: ${{ parameters.ServiceConnection }}
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          echo "##vso[task.setvariable variable=connectionString;issecret=true]$(az deployment group show --resource-group "${{ parameters.ServiceConnection }}" -n "accounting" --query "properties.outputs.connectionString.value" | tr -d '"')"
+
+    # Apply migrations
+    - task: DotNetCoreCLI@2
+      displayName: 'Apply migrations'
+      inputs:
+        command: custom
+        custom: ef
+        arguments: 'database update --project "$(System.DefaultWorkingDirectory)/Source/Accounting.Data" --startup-project "$(System.DefaultWorkingDirectory)/Source/Accounting.Application" --connection "$(connectionString)"'
+      env: 
+        ASPNETCORE_ENVIRONMENT: ${{ parameters.EnvironmentName }}
+
+    
+    # Start the application
+    - task: AzureAppServiceManage@0
+      displayName: 'Start app'
+      inputs: 
+        azureSubscription: ${{ parameters.ServiceConnection }}
+        webAppName: $(appServiceName)
+        action: 'Start Azure App Service'      
+
+
+  # Test
+  - job: Test
+    dependsOn: [Deploy, Migrate]
+    displayName: 'Test'
+
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    variables:
+      appServiceUrl: $[ dependencies.Deploy.outputs['Deploy.provision.appServiceUrl'] ]
+
+    steps:
+    # Install node modules
+    - task: Npm@1
+      displayName: 'Run npm install'
+      inputs:
+        Command: 'install'
+        workingDir: 'Source/Accounting.Ng'
+
+    # Run Cypress E2E Tests
+    - task: Npm@1
+      displayName: Run Cypress E2E Tests
+      inputs:
+        command: custom
+        customCommand: 'run cypress:run'
+        workingDir: 'Source/Accounting.Ng'
+      env: 
+        CYPRESS_BASE_URL: $(appServiceUrl)
+        CYPRESS_VIDEO: false
