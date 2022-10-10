@@ -1,0 +1,73 @@
+<form [formGroup]="customerForm" (ngSubmit)="onSubmit($event)" novalidate>  
+  <mat-card class="invoice-card">
+    <mat-card-content>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Customer Name</mat-label>
+          <input matInput placeholder="Customer Name" formControlName="name" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Contact Name</mat-label>
+          <input matInput placeholder="Contact Name" formControlName="contactName" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Contact Email</mat-label>
+          <input matInput placeholder="Contact Email" formControlName="contactEmail" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Address Line 1</mat-label>
+          <input matInput placeholder="Address Line 1" formControlName="addressLine1" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Address Line 2</mat-label>
+          <input matInput placeholder="Address Line 2" formControlName="addressLine2" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Address Line 3</mat-label>
+          <input matInput placeholder="Address Line 3" formControlName="addressLine3" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Country</mat-label>
+          <input matInput placeholder="Country" formControlName="country" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Postcode</mat-label>
+          <input matInput placeholder="Postcode" formControlName="postCode" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Phone Prefix</mat-label>
+          <input matInput placeholder="Phone Prefix" formControlName="phoneNumberPrefix" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Phone</mat-label>
+          <input matInput placeholder="Phone" formControlName="phoneNumber" />
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+      <mat-card-actions class="buttons-right">
+        <button mat-raised-button color="accent" type="submit">Add</button>
+      </mat-card-actions>
+    </mat-card>
+    </form>
+  
+
+
+  

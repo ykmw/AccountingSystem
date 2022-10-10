@@ -1,0 +1,84 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '~@angular/material' as mat;
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+$nzba-palette: (
+50: #F0F0F0,
+100: #D8D8DD,
+200: #BDC3C9,
+300: #A1ABB5,
+400: #8B9894,
+500: #768695,
+600: #687784,
+700: #57626D,
+800: #484F57,
+900: #353A3F,
+A100: #ffeaed,
+A200: #f59494,
+A400: #ec1b24,
+A700: #bf0008,
+contrast: (
+  50: rgba(black, 0.87),
+  100: rgba(black, 0.87),
+  200: rgba(black, 0.87),
+  300: rgba(black, 0.87),
+  400: rgba(black, 0.87),
+  500: rgba(black, 0.87),
+  600: rgba(black, 0.87),
+  700: white,
+  800: white,
+  900: white,
+  A100: rgba(black, 0.87),
+  A200: rgba(black, 0.87),
+  A400: white,
+  A700: white
+)
+);
+
+$NZBAAccounting-primary: mat.define-palette($nzba-palette, 900, 700, 900);
+$NZBAAccounting-accent: mat.define-palette($nzba-palette, A400, A200, A700);
+
+// The warn palette is optional (defaults to red).
+$NZBAAccounting-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$NZBAAccounting-theme: mat.define-light-theme((
+  color: (
+    primary: $NZBAAccounting-primary,
+    accent: $NZBAAccounting-accent,
+    warn: $NZBAAccounting-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($NZBAAccounting-theme);
+
+
+ // Define a dark theme
+ $NZBAAccounting-dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $NZBAAccounting-primary,
+    accent: $NZBAAccounting-accent,
+    warn: $NZBAAccounting-warn,
+  )
+));
+
+.sidenav-theme {
+  @include mat.sidenav-color($NZBAAccounting-dark-theme);
+  @include mat.list-color($NZBAAccounting-dark-theme);
+ }

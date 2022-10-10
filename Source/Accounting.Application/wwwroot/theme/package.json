@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "css-compile": "sass --style expanded --source-map --embed-sources --no-error-css sass/:../css/"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.2.5",
+    "rtlcss": "^3.1.2",
+    "sass": "^1.32.13"
+  }
+}

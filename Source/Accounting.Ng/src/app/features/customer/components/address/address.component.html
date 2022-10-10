@@ -1,0 +1,77 @@
+<div [formGroup]="form" #f="ngForm">
+   <mat-form-field class="customer-form-field">
+        <input 
+            matInput
+            class="customer-input"
+            placeholder="Search......."
+            id="address"
+        >
+    </mat-form-field>
+
+    <mat-form-field class="customer-form-field">
+        <mat-label>Address Line 1</mat-label>
+        <input 
+            matInput
+            class="customer-input"
+            placeholder="Address Line 1"
+            id="addressLine1"
+            [ngModel]="addressLine1.value"
+            #addressLine1 formControlName="addressLine1"
+            required
+        >
+        <mat-error *ngIf="checkError('addressLine1','required')">Address line 1 is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="customer-form-field">
+        <mat-label>Address Line 2</mat-label>
+        <input 
+            matInput
+            class="customer-input"
+            placeholder="Address Line 2"
+            id="addressLine2"
+            [ngModel]="addressLine2.value"
+            #addressLine2 formControlName="addressLine2"
+            
+            
+        >
+    </mat-form-field>
+
+    <mat-form-field class="customer-form-field">
+        <mat-label>Address Line 3</mat-label>
+        <input 
+            matInput
+            class="customer-input"
+            placeholder="Address Line 3"
+            id="addressLine3"
+            [ngModel]="addressLine3.value"
+            #addressLine3 formControlName="addressLine3"
+            required
+        >
+        <mat-error *ngIf="checkError('addressLine3','required')">Address line 3 is required</mat-error>
+    </mat-form-field>
+   
+    
+    <mat-form-field class="customer-form-field">
+        <mat-label>Post Code</mat-label>
+        <input 
+            matInput
+            class="customer-input"
+            placeholder="Post Code"
+            id="postCode"
+            [ngModel]="postCode.value"
+            #postCode formControlName="postCode"
+            required
+        >
+        <mat-error *ngIf="checkError('postCode','required')">Post code is required</mat-error>
+    </mat-form-field> 
+
+    <mat-form-field class="customer-form-field">
+        <mat-label>Country</mat-label>
+        <mat-select [(value)]="Country" matInput required formControlName="Country">
+            <mat-option *ngFor="let country of countries" [value]="country.name">
+                <img src={{imagePath}}{{country.alpha2}}{{tail}} > {{country.name}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="checkError('Country','required')">Country is required</mat-error>
+    </mat-form-field>
+</div>

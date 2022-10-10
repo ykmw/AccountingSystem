@@ -1,0 +1,109 @@
+<mat-card class="new-customer-card">
+   <mat-card-header class="customer-header">
+      <mat-card-title>{{title}}</mat-card-title>
+   </mat-card-header> 
+   <mat-divider class="customer-divider"></mat-divider>
+ <mat-card-content>
+   <form [formGroup]="customerregform" (ngSubmit)="onSubmit()" class="customer-form" #f="ngForm">
+      <div class="customer-form-container" fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap="60px">
+         <div fxLayout="column" fxFlex="30%">
+            <div>
+               <mat-form-field class="customer-form-field">
+                  <mat-label>Customer Name:</mat-label>
+                  <input 
+                            class="customer-input"
+                            matInput
+                            type="text"
+                            id="clientname"
+                            matInput placeholder="John"
+                            formControlName="Name" 
+                            required
+                        >
+                    <mat-error *ngIf="checkError('Name','required')">Name is required</mat-error> 
+               </mat-form-field>
+            </div>
+
+            <div>
+               <mat-form-field class="customer-form-field">
+                        <mat-label>GST Excemption</mat-label>
+                        <mat-select matInput [(value)]="IsGSTExempt" formControlName="IsGSTExempt" required>
+                            <mat-option *ngFor="let gstexce of gstcondition" [value]="gstexce.IsGSTExempt">
+                                {{gstexce.IsGSTExempt}}
+                            </mat-option>
+
+                        </mat-select>
+                        <mat-error *ngIf="checkError('IsGSTExempt','required')">GST Excemption is required</mat-error>
+                    </mat-form-field>
+            </div>
+
+            <div>
+                    <mat-form-field class="customer-form-field">
+                        <mat-label>Contact Name:</mat-label>
+                        <input 
+                            class="customer-input"
+                            matInput
+                            type="text"
+                            id="contactname"
+                            matInput placeholder="Smith"
+                            formControlName="ContactName"
+                            required 
+                        >
+                        <mat-error *ngIf="checkError('ContactName','required')">Contact name is required</mat-error>
+                    </mat-form-field>
+            </div>
+
+            <div>
+                    <mat-form-field class="customer-form-field">
+                        <mat-label>Contact Email:</mat-label>
+                        <input 
+                            class="customer-input"
+                            placeholder="test@gmail.com"
+                            matInput
+                            type="email"
+                            id="email"
+                            matInput
+                            formControlName="ContactEmail"
+                            required 
+                        >
+                        <mat-error *ngIf="checkError('ContactEmail','required')">Email is required</mat-error>
+                        <mat-error *ngIf="checkError('ContactEmail','pattern')">Enter valid email</mat-error>
+                    </mat-form-field>
+                </div>
+         </div>
+         <div fxLayout="column" fxFlex="30%">
+                    <app-address required matInput formControlName="address"></app-address>
+         </div>
+
+         <div fxLayout="column" fxFlex="30%">
+
+                <div>
+                    <mat-form-field class="customer-form-field">
+                        <mat-label>Phone Number</mat-label>
+                        <app-tel-input class="tel" matInput required formControlName="phone"></app-tel-input>
+                        <mat-error *ngIf="checkError('phone','required')">Phone number is required</mat-error> 
+                    </mat-form-field>
+                </div>
+
+                 <div>
+                    <mat-form-field class="customer-form-field">
+                        <mat-label>Invoice Number:</mat-label>
+                        <input 
+                            class="customer-input"
+                            placeholder="Invoice Number"
+                            matInput
+                            type="number"
+                            id="invoicenumber" 
+                            formControlName="InvoiceId"
+                        >
+                     <mat-error *ngIf="checkError('InvoiceId','required')">Invoice number is required</mat-error>
+                    </mat-form-field>
+            
+
+                <button type="submit" [disabled]="!f.valid" mat-raised-button class="savebtn">Save</button>
+                <button type="reset" mat-raised-button class="cancelbtn">Cancel</button>
+            </div>
+         </div>
+      </div>
+   </form>
+ </mat-card-content>
+</mat-card>

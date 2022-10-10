@@ -1,0 +1,33 @@
+<mat-stepper class="example-stepper"
+  [orientation]="(stepperOrientation | async)!">
+  <mat-step label="Add Customer" errorMessage="Complete all required fields.">
+    <mat-card-header>
+      <mat-card-title>Add Customer</mat-card-title>
+    </mat-card-header>
+      <app-invoice-customer></app-invoice-customer>  
+    <div>
+     <button mat-button matStepperPrevious>Back</button>
+     <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step label="Add Items" errorMessage="Complete all required fields.">
+    <mat-card-header>
+      <mat-card-title>Add Items</mat-card-title>
+    </mat-card-header>
+      <app-invoice-lineitem></app-invoice-lineitem>
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step label="Review your invoice">
+    <mat-card-header>
+      <mat-card-title>Review + Send</mat-card-title>
+    </mat-card-header>
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+    </div>
+  </mat-step>
+</mat-stepper>

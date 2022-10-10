@@ -1,0 +1,30 @@
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger: none
+
+schedules:
+- cron: '0 11 * * *' # Azure Devops uses UTC Time
+  displayName: 'Remove Sandbox every day at 11pm'
+  branches:
+    include:
+    - develop
+  always: true 
+
+pool: 
+  vmImage: 'ubuntu-latest'
+
+variables: 
+  serviceConnectionBase: 'AccountingProject'
+
+steps:
+- task: AzureCLI@2
+  name: remove_sandbox
+  displayName: Remove the Sandbox
+  inputs:
+    azureSubscription: ${{ variables.ServiceConnectionBase }}Sandbox
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az deployment group create --resource-group "${{ variables.ServiceConnectionBase }}Sandbox" --template-file "Cloud/resource-templates/removeall.bicep" --mode Complete
+
+

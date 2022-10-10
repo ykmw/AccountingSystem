@@ -1,0 +1,43 @@
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+
+variables:
+  buildConfiguration: 'Release'
+  releaseBranchName: 'develop'
+  serviceConnectionBase: 'AccountingProject'
+
+stages:
+# Build the project and run commands (e.g. unit tests) 
+# that don't require a deployed application
+- template: build.yml
+  parameters:
+    buildConfiguration: ${{ variables.buildConfiguration }}
+
+# If building the develop branch, deploy to the Test environment and 
+# run commands (e.g. migrations) that do require a provisioned and/or 
+# deployed application
+- stage: 'Test'
+  displayName: 'Deploy to Test'
+  dependsOn: Build
+  condition: |
+    and
+    (
+      succeeded(),
+      eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
+    )
+  jobs:
+  - template: deploy.yml
+    parameters:
+      # The Service Connection is named the same as the Resource Group
+      # the deployment will target so this parameter serves to specify both
+      ServiceConnection: ${{ variables.ServiceConnectionBase }}Test
+      BuildConfiguration: ${{ variables.buildConfiguration }}
+      EnvironmentName: Test
+
+
+

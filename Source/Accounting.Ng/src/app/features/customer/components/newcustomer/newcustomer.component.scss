@@ -1,0 +1,71 @@
+.new-customer-card {
+    height: auto;
+    width: 95%;
+    border: 2px solid slategray;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.customer-divider {
+    border: 1px solid slategray;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.customer-form-container {
+
+    margin-top: 20px;
+
+    .customer-form-field {
+    
+        width: 100%;
+        .customer-input {
+            height: 35px;
+            padding: auto;
+            //border: 1px solid slategray;
+            
+        }
+
+        
+
+        .tel {
+            padding: 1px;
+        }
+    }
+
+    .savebtn {
+        display: block;
+        color: white;
+        background-color: blue;
+        text-align: center;
+        width: 200px;
+        height: 40px;
+        padding: 2px;
+        border: none;
+    }
+
+    .savebtn:disabled {
+        background-color: slateblue;
+    }
+       
+
+    .cancelbtn {
+        margin-top: 5px;
+        display: block;
+        color: white;
+        background-color: orange;
+        text-align: center;
+        width: 200px;
+        height: 40px;
+        padding: 2px;
+        border: none;
+    }
+
+    .address-gap {
+        margin-top: 8px;
+    }
+
+    
+}
+
+.error {
+    color: red;
+}

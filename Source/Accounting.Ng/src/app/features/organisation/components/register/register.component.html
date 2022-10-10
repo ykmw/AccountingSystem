@@ -1,0 +1,133 @@
+<mat-card class="output-card">
+  <mat-card-header>
+    <mat-card-title>Organisation Detail</mat-card-title>
+  </mat-card-header>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit($event)">
+    <mat-grid-list cols="2">
+      <mat-grid-tile>
+        <div>
+          <ul class="no-bullets">
+            <li><h1>Organisation Name</h1></li>
+            <li>
+              <mat-form-field class="full-width">
+                <mat-label>Organisation Name</mat-label>
+                <input
+                  matInput
+                  placeholder="My Organisation Name"
+                  formControlName="organisationName"
+                  required />
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <mat-label>Short Code</mat-label>
+                <input matInput placeholder="ABCD" formControlName="shortCode" required />
+                <mat-icon
+                  matSuffix
+                  matTooltip="The short code field requires four characters. These will be used as the first four characters in the invoice numbers your organisation generates.">
+                  info</mat-icon
+                >
+                <mat-hint>Required to be exactly 4 characters.</mat-hint>
+              </mat-form-field>
+            </li>
+            <li><h1>Address</h1></li>
+            <li>
+              <mat-form-field class="full-width">
+                <mat-label>Address Line 1</mat-label>
+                <input
+                  matInput
+                  placeholder="Address Line 1"
+                  formControlName="addressLine1"
+                  required />
+              </mat-form-field>
+            </li>
+            <li *ngIf="!hasUnitNumber">
+              <button mat-button type="button" (click)="hasUnitNumber = !hasUnitNumber">
+                + Add Address Line 2
+              </button>
+            </li>
+            <li *ngIf="hasUnitNumber">
+              <mat-form-field class="full-width">
+                <mat-label>Address Line 2</mat-label>
+                <input
+                  matInput
+                  placeholder="Address Line 2"
+                  formControlName="addressLine2"
+                  required />
+              </mat-form-field>
+            </li>
+            <li>
+              <mat-form-field class="full-width">
+                <mat-label>City / Town</mat-label>
+                <input matInput placeholder="Town / City" formControlName="townCity" required />
+              </mat-form-field>
+            </li>
+            <li>
+              <mat-form-field class="full-width">
+                <mat-label>Country</mat-label>
+                <mat-select formControlName="country" required>
+                  <mat-option *ngFor="let country of countries" [value]="country">{{
+                    country
+                  }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </li>
+            <li>
+              <mat-form-field class="full-width">
+                <mat-label>Postcode</mat-label>
+                <input matInput placeholder="Postcode" formControlName="postCode" required />
+              </mat-form-field>
+            </li>
+            <li><h1>Phone</h1></li>
+            <li>
+              <mat-form-field class="half-width">
+                <mat-label>Phone Prefix</mat-label>
+                <input matInput placeholder="PhonePrefix" formControlName="phonePrefix" required />
+              </mat-form-field>
+              <mat-form-field class="half-width">
+                <mat-label>Phone</mat-label>
+                <input matInput placeholder="Phone" formControlName="phone" required />
+              </mat-form-field>
+            </li>
+            <li>
+              <mat-checkbox [checked]="gstRegistered" (change)="setGST($event.checked)">GST Registered</mat-checkbox>
+            </li>
+            <li *ngIf="gstRegistered">
+              <mat-form-field class="example-full-width" class="full-width">
+                <mat-label>GST Number</mat-label>
+                <input matInput formControlName="gstNumber" placeholder="Input your GST number" />
+              </mat-form-field>
+            </li>
+          </ul>
+        </div>
+      </mat-grid-tile>
+      <!--     <mat-grid-tile>
+      <ul class="no-bullets">
+        <li><h1>Upload Logo (Optional)</h1></li>
+        <li>
+          <input mat-button type="file" formControlName="logo" name="logo" />
+        </li>
+        <br />
+        <li>
+          <img
+            mat-card-image
+            class="responsiveIMG"
+            src="/assets/nzba-logo.png"
+            alt="Business Logo"
+          />
+        </li>
+        <li>
+          The image you upload here will appear on any invoices your
+          organisation creates
+        </li>
+      </ul>
+    </mat-grid-tile> -->
+    </mat-grid-list>
+
+    <mat-card-actions class="buttons-right">
+      <button mat-raised-button color="primary" [disabled]="!registerForm.valid" type="submit">
+        Save
+      </button>
+      <!-- TODO: Add an ngif to show the appropriate button -->
+      <!-- <button mat-raised-button color="primary" type="button" onclick="">Save</button> -->
+    </mat-card-actions>
+  </form>
+</mat-card>

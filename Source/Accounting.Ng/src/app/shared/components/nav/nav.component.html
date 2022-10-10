@@ -1,0 +1,44 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    *ngIf="isAuthenticated"
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false">
+    <a mat-button [routerLink]="['/']"><img src="assets/nzba-logo.png" height="50" /></a>
+    <mat-nav-list >
+      <a mat-list-item  class="nav-link" [routerLink]="['stepper/']">
+        <mat-icon>person_add_alt_1</mat-icon> New Invoice</a>
+      <a mat-list-item class="nav-link" [routerLink]="['newcustomer/']">
+        <mat-icon>accessibility</mat-icon>New Customer</a>
+      <a mat-list-item  class="nav-link" [routerLink]="['invoices/']">
+          <mat-icon>search</mat-icon> Find Invoice</a>
+      <a mat-list-item  class="nav-link" [routerLink]="['organisation/']">
+        <mat-icon>business</mat-icon> My Organisation</a>
+
+      <a mat-list-item class="nav-link" [routerLink]="['invoicing/']">
+        <mat-icon>insert_drive_file</mat-icon> Ng Template</a
+      >
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        *ngIf="(isHandset$ | async) && isAuthenticated !== true"
+        (click)="drawertoggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Accounting</span>
+      <span class="toolbar-spacer"></span>
+      <app-login-menu></app-login-menu>
+    </mat-toolbar>
+
+    <!-- content goes here! -->
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

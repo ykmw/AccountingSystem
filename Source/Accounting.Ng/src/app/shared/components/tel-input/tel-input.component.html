@@ -1,0 +1,35 @@
+<div class="tel-input-container"
+     [formGroup]="parts"
+     [attr.aria-labelledby]='_formField?.getLabelId()'
+     (focusin)="onFocusIn($event)"
+     (focusout)="onFocusOut($event)"  
+>
+
+    <input 
+        class="tel-input-element"
+        formControlName="phoneNumberPrefix"
+        placeholder="22"
+        type="textbox"
+        size="2"
+        maxlength="2"
+        area-label="PhoneNumberPrefix Code"
+        (input)="_handleInput(parts.controls.phoneNumberPrefix, phoneNumber)"
+        #phoneNumberPrefix
+        required
+
+    >
+    <span class="tel-input-element">&ndash;</span>
+    <input 
+        class="tel-input-element"
+        type="textbox"
+        size="7"
+        maxlength="7"
+        formControlName="phoneNumber"
+        (input)="_handleInput(parts.controls.phoneNumber)"
+        (keyup.backspace)="autoFocusPrev(parts.controls.phoneNumber, phoneNumberPrefix)"
+        #phoneNumber
+        required
+
+    >
+   
+</div>

@@ -1,0 +1,8 @@
+apiRules:
+- exclude:
+    uidRegex: ^Accounting\.Application\.Areas\.Identity.*
+    type: Namespace
+- exclude:
+    uidRegex: ^Accounting\.Data\..*Migrations.*
+    type: Namespace
+

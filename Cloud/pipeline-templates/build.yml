@@ -1,0 +1,116 @@
+parameters:
+  - name: buildConfiguration
+    displayName: 'Build Configuration'
+    type: string
+    default: Release
+    values:
+    - Release
+    - Debug
+    
+
+stages:
+- stage: 'Build'
+  jobs: 
+  - job: 'Build'
+    pool: 
+      vmImage: ubuntu-latest
+
+    variables:
+      projects: 'Source/**/*.csproj'
+      
+    steps:
+    # Restore packages
+    - task: DotNetCoreCLI@2
+      displayName: 'Run dotnet restore'
+      inputs:
+        command: 'restore'
+        projects: '${{ variables.projects }}'
+      
+    # Build projects
+    - task: DotNetCoreCLI@2
+      displayName: 'Build the project - ${{ parameters.buildConfiguration }}'
+      inputs:
+        command: 'build'
+        arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} -p:TreatWarningsAsErrors=True'
+        projects: '${{ variables.projects }}'
+
+    # Install local tools in order to get access to the code coverage
+    # report generator
+    - task: DotNetCoreCLI@2
+      displayName: 'Install local tools'
+      inputs:
+        command: custom
+        custom: tool
+        arguments: 'restore'
+
+    # Run unit tests and collect code coverage data
+    - task: DotNetCoreCLI@2
+      displayName: 'Run unit tests - ${{ parameters.buildConfiguration }}'
+      inputs:
+        command: 'test'
+        arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:"Exclude=\"[Accounting.Application.Views]*,[*.Tests]*\"" /p:ExcludeByFile=**/Migrations/**/*.cs'
+        publishTestResults: true
+        projects: '**/*.Tests.csproj'
+
+    # Create code coverage report
+    - task: DotNetCoreCLI@2
+      displayName: 'Create code coverage report'
+      inputs:
+        command: custom
+        custom: tool
+        arguments: 'run reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:Cobertura'
+
+    # Publish the code coverage report to the Code Coverage tab for the pipeline run
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage report'
+      inputs:
+        codeCoverageTool: 'cobertura'
+        summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
+
+    # Install node modules
+    - task: Npm@1
+      displayName: 'Run npm install'
+      inputs:
+        Command: 'install'
+        workingDir: 'Source/Accounting.Ng'
+
+    # Run Angular ESLint test
+    - task: Npm@1
+      displayName: Run Angular ESLint
+      inputs:
+        command: custom
+        customCommand: 'run lint'
+        workingDir: 'Source/Accounting.Ng'
+
+    # Run Angular Jasmine Tests
+    - script: 'npx ng test --watch=false'
+      workingDirectory: 'Source/Accounting.Ng'
+      displayName: Run Jasmine Tests
+    
+    # Publish Jasmine test results in Junit format including succeeded and failed
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/Source/Accounting.Ng/TESTS-*.xml'
+      displayName: 'Publish Jasmine Test Results'
+
+    # Publish the project and the resource templates used to provision cloud resources
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish the project - ${{ parameters.buildConfiguration }}'
+      inputs:
+        command: 'publish'
+        arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)/${{ parameters.buildConfiguration }}'
+        zipAfterPublish: true
+        projects: '${{ variables.projects }}'
+
+    - script: |
+        mkdir $(Build.ArtifactStagingDirectory)/${{ parameters.buildConfiguration }}/resource-templates
+        cp Cloud/resource-templates/*.bicep $(Build.ArtifactStagingDirectory)/${{ parameters.buildConfiguration }}/resource-templates
+        cp Cloud/resource-templates/var-*.json $(Build.ArtifactStagingDirectory)/${{ parameters.buildConfiguration }}/resource-templates
+      displayName: 'Publish Bicep Templates'
+
+    # Upload the staged build artifacts for use in other stages
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: succeeded()

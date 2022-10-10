@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <BaseOutputPath>..\Accounting.Application\bin\</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Accounting.Data\Accounting.Data.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,40 @@
+<form [formGroup]="lineitemForm" (ngSubmit)="onSubmit($event)">   
+  <mat-card class="invoice-card">
+    <mat-card-content>
+
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Description</mat-label>
+          <input matInput placeholder="Description" formControlName="description" required />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Quantity</mat-label>
+          <input matInput placeholder="Quantity" formControlName="quantity" required />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Price</mat-label>
+          <input matInput placeholder="Price" formControlName="price" required />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field  class="full-width">
+          <mat-label>Amount</mat-label>
+          <input matInput placeholder="Amount" formControlName="total" required />
+        </mat-form-field>
+      </div>
+
+    </mat-card-content>
+
+    <mat-card-actions class="buttons-right">
+      <button mat-raised-button color="accent" type="submit">Add</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
+  
+
+
+  

@@ -1,0 +1,9 @@
+<div  *ngIf="isAuthenticated | async">
+    <a mat-button [routerLink]='["/authentication/profile"]' [state]='{ local: true }' title="Profile"><mat-icon>manage_accounts</mat-icon>Settings</a>
+    <a mat-button [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout"><mat-icon>logout</mat-icon>Logout</a>
+</div>
+
+<div *ngIf="(isAuthenticated | async) !== true">
+    <a mat-button [routerLink]='["/authentication/register"]' title="Register"><mat-icon>fingerprint</mat-icon>Register</a>
+    <a mat-button [routerLink]='["/authentication/login"]' title="Login"><mat-icon>login</mat-icon>Login</a>
+</div>

@@ -1,0 +1,72 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+@{ #pragma warning disable CS8602 }
+<h1>@ViewData["Title"]</h1>
+
+
+<div class="row">
+    <form asp-route-returnUrl="@Model.ReturnUrl" class="row g-3" method="post">
+        <div>
+            <h3><img src="~/images/nzba-logo.png" alt="logo" /> <b style="padding-left: 100px">Registration Form</b></h3>
+        </div>
+        <br />
+        <hr />
+        <div class="col-md-6">
+            <div>
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" placeholder="Name" class="form-control" />
+            </div>
+            <div style="padding-top: 10px">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" placeholder="Last Name" class="form-control" />
+            </div>
+            <div style="padding-top: 10px">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" placeholder="Email" class="form-control" />
+                <br />
+                <span asp-validation-for="Input.Email" style="align-content: center" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4">
+                    <label asp-for="Input.PhoneNumberPrefix"></label>
+                    <input asp-for="Input.PhoneNumberPrefix" placeholder="Prefix" class="form-control" />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <input asp-for="Input.PhoneNumber" placeholder="Phone" class="form-control" />
+                </div>
+            </div>
+            <span asp-validation-for="Input.PhoneNumberPrefix" style="align-content: center" class="text-danger"></span>
+            <span asp-validation-for="Input.PhoneNumber" style="align-content: center" class="text-danger"></span>
+            <div style="padding-top: 10px">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div style="padding-top: 10px">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+        <br />
+        <div asp-validation-summary="All" class="text-danger" style="align-content: center"></div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@{ #pragma warning restore CS8602 }

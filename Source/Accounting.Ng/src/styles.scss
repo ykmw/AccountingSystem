@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* See https://material.angular.io/guide/theming for guidance on theming 
+   and how to apply and scope secondary themes and customizations */
+
+/* See https://material.angular.io/guide/customizing-component-styles for guidance
+   on recommended ways to customize component styles */
+
+/* In general, avoid overriding themes and component styles (except as detailed in the guides above)
+   and try to keep the CSS simple and therefore maintainable */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.center-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.right-element {
+  position: absolute;
+  right: 0px;
+  padding: 10px;
+}
